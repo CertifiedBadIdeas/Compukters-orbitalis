@@ -50,8 +50,44 @@ public value class CoastSummary(
     public val maximumRadius: Double,
 )
 
+/** State measured in the rotating Earth terrain frame, also when the ship is in Space.
+ * acceleration is the engines-off derivative of velocity, including transport terms.
+ * earthX/Y/Z rotate Earth force vectors into the current native Sable chart.
+ */
+public value class EarthSample(
+    public val gameTick: Long,
+    public val constructionId: String,
+    public val dimension: String,
+    public val position: Vector3d,
+    public val velocity: Vector3d,
+    public val acceleration: Vector3d,
+    public val earthX: Vector3d,
+    public val earthY: Vector3d,
+    public val earthZ: Vector3d,
+    public val halfWidth: Double,
+    public val halfDepth: Double,
+    public val entryDistance: Double,
+    public val halfHeight: Double,
+)
+
+/** First engines-off crossing of the rotating Earth's real return envelope within 600 s.
+ * If willEnter is false, position/velocity describe the terminal forecast state instead.
+ * Ignores engines, collisions and atmospheric drag; not a landing recommendation.
+ */
+public value class EntrySummary(
+    public val sampledTick: Long,
+    public val constructionId: String,
+    public val dimension: String,
+    public val willEnter: Boolean,
+    public val seconds: Double,
+    public val position: Vector3d,
+    public val velocity: Vector3d,
+)
+
 public object Navigation {
     external fun observe(): NavigationSample
+    external fun earth(): EarthSample
+    external fun entry(): EntrySummary
     /** Bounded asynchronous work. Capture on the server; pure forecast on a worker.
      * Call after releasing thrust; the model omits engines and other non-gravity forces.
      */

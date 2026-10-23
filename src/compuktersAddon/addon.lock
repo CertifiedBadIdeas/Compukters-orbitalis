@@ -2,7 +2,11 @@ lock 2
 record kotlin.math.Vector3d kotlin.math.Vector3d{x:F64,y:F64,z:F64}
 record orbitalis.gravity.GravitySample orbitalis.gravity.GravitySample{gameTick:I64,constructionId:STRING,dimension:STRING,computerPlotPosition:kotlin.math.Vector3d{x:F64,y:F64,z:F64},position:kotlin.math.Vector3d{x:F64,y:F64,z:F64},velocity:kotlin.math.Vector3d{x:F64,y:F64,z:F64},acceleration:kotlin.math.Vector3d{x:F64,y:F64,z:F64},mass:F64}
 record orbitalis.navigation.CoastSummary orbitalis.navigation.CoastSummary{sampledTick:I64,constructionId:STRING,dimension:STRING,end:STRING,seconds:F64,minimumRadius:F64,maximumRadius:F64}
+record orbitalis.navigation.EarthSample orbitalis.navigation.EarthSample{gameTick:I64,constructionId:STRING,dimension:STRING,position:kotlin.math.Vector3d{x:F64,y:F64,z:F64},velocity:kotlin.math.Vector3d{x:F64,y:F64,z:F64},acceleration:kotlin.math.Vector3d{x:F64,y:F64,z:F64},earthX:kotlin.math.Vector3d{x:F64,y:F64,z:F64},earthY:kotlin.math.Vector3d{x:F64,y:F64,z:F64},earthZ:kotlin.math.Vector3d{x:F64,y:F64,z:F64},halfWidth:F64,halfDepth:F64,entryDistance:F64,halfHeight:F64}
+record orbitalis.navigation.EntrySummary orbitalis.navigation.EntrySummary{sampledTick:I64,constructionId:STRING,dimension:STRING,willEnter:BOOL,seconds:F64,position:kotlin.math.Vector3d{x:F64,y:F64,z:F64},velocity:kotlin.math.Vector3d{x:F64,y:F64,z:F64}}
 record orbitalis.navigation.NavigationSample orbitalis.navigation.NavigationSample{gameTick:I64,constructionId:STRING,dimension:STRING,position:kotlin.math.Vector3d{x:F64,y:F64,z:F64},velocity:kotlin.math.Vector3d{x:F64,y:F64,z:F64},gravity:kotlin.math.Vector3d{x:F64,y:F64,z:F64},rootX:kotlin.math.Vector3d{x:F64,y:F64,z:F64},rootY:kotlin.math.Vector3d{x:F64,y:F64,z:F64},rootZ:kotlin.math.Vector3d{x:F64,y:F64,z:F64},earthMu:F64,exclusionRadius:F64}
 operation orbitalis orbitalis 1 0 active orbitalis.gravity.Gravity.sample fun():GravitySample
 operation orbitalis orbitalis 1 1 active orbitalis.navigation.Navigation.coast fun():CoastSummary
 operation orbitalis orbitalis 1 2 active orbitalis.navigation.Navigation.observe fun():NavigationSample
+operation orbitalis orbitalis 1 3 active orbitalis.navigation.Navigation.earth fun():EarthSample
+operation orbitalis orbitalis 1 4 active orbitalis.navigation.Navigation.entry fun():EntrySummary

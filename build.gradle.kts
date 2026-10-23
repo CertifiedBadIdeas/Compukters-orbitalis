@@ -22,7 +22,7 @@ plugins {
     id("ru.lazyhat.compukters.addon")
 }
 group = "org.cbi.development"
-version = "1.1"
+version = "1.2"
 java { toolchain.languageVersion.set(JavaLanguageVersion.of(21)) }
 kotlin { jvmToolchain(21) }
 val compukters = file(providers.gradleProperty("compuktersWorkspace").get())
@@ -36,7 +36,7 @@ repositories {
     maven("https://api.modrinth.com/maven")
 }
 apply(from = "../../gradle/sable-libraries.gradle.kts")
-compuktersAddon { register("orbitalis", "1.1") }
+compuktersAddon { register("orbitalis", "1.2") }
 configurations.named("compuktersAddonTooling") {
     withDependencies {
         clear()
@@ -69,3 +69,10 @@ tasks.register<Jar>("developmentModJar") {
     destinationDirectory.set(layout.buildDirectory.dir("devlibs"))
     from(sourceSets.main.get().output)
 }
+
+dependencies {
+    testImplementation(kotlin("test"))
+    testImplementation(files(orbitalis.resolve("modules/minecraft/v1_21_1/v1_21_1-neoforge/build/devlibs/orbitalis-development-mod.jar")))
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+tasks.test { useJUnitPlatform() }

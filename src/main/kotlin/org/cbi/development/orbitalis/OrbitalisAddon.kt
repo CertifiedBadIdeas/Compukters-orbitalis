@@ -24,6 +24,8 @@ import org.cbi.orbitalis.minecraft.integration.sable.ShipCoastForecast
 import org.cbi.orbitalis.minecraft.flight.CelestialFlight
 import org.cbi.orbitalis.core.planet.CartesianState
 import org.cbi.orbitalis.core.planet.Vector3
+import orbitalis.EarthSample
+import orbitalis.EntrySummary
 import orbitalis.NavigationSample
 import orbitalis.CoastSummary
 import ru.lazyhat.compukters.api.addon.addonPending
@@ -58,7 +60,7 @@ class OrbitalisAddon {
 }
 
 private class GravityHost(private val computer: CompuktersComputerContext) : OrbitalisCapabilityHandler {
-    private var pending: Future<CoastSummary>? = null
+    private var pending: Future<*>? = null
     override fun checkpoint(): ByteArray { reset(); return byteArrayOf() }
     override fun reset() { pending?.cancel(true); pending = null }
 
@@ -92,17 +94,62 @@ private class GravityHost(private val computer: CompuktersComputerContext) : Orb
     override fun coast(): AddonCallResult<CoastSummary> {
         val body = body() ?: return unavailable()
         val capture = ShipCoastForecast.capture(body) ?: return unavailable()
+        return forecast {
+            val trajectory = capture.calculate()
+            val prediction = trajectory.prediction
+            CoastSummary(trajectory.sampledTick, trajectory.ship.toString(), trajectory.dimension.toString(),
+                prediction.end.name, prediction.terminal.seconds,
+                prediction.points.minOf { it.state.position.length() },
+                prediction.points.maxOf { it.state.position.length() })
+        }
+    }
+
+    override fun earth(): AddonCallResult<EarthSample> {
+        val body = body() ?: return unavailable()
+        val sample = SableFlightGravity.reading(body)
+        val celestial = CelestialFlight.sample(computer.level.server)
+        val chart = computer.level.dimension()
+        val root = celestial.rootState(CartesianState(sample.position,
+            Vector3(sample.velocity.x, sample.velocity.y, sample.velocity.z)), chart)
+        val profile = celestial.frames.profile
+        val frame = profile.earthSurfaceFrame(celestial.frames.tick)
+        val earth = frame.fromParent(root)
+        val envelope = profile.geometry.earthEnvelope
+        fun guest(v: Vector3) = Vector3d(v.x, v.y, v.z)
+        fun axis(v: Vector3) = guest(celestial.nativeDirection(frame.orientation.apply(v), chart))
+        return addonCompleted(EarthSample(computer.level.gameTime, body.uniqueId.toString(), chart.location().toString(),
+            guest(earth.position), guest(earth.velocity),
+            guest(frame.fromParentAcceleration(root, celestial.dynamics.acceleration(root.position))),
+            axis(Vector3(1.0, 0.0, 0.0)), axis(Vector3(0.0, 1.0, 0.0)), axis(Vector3(0.0, 0.0, 1.0)),
+            envelope.halfExtents.x, envelope.halfExtents.z, envelope.descentDistance, envelope.halfExtents.y))
+    }
+
+    override fun entry(): AddonCallResult<EntrySummary> {
+        val body = body() ?: return unavailable()
+        val sample = SableFlightGravity.reading(body)
+        val celestial = CelestialFlight.sample(computer.level.server)
+        val root = celestial.rootState(CartesianState(sample.position,
+            Vector3(sample.velocity.x, sample.velocity.y, sample.velocity.z)), computer.level.dimension())
+        val tick = computer.level.gameTime
+        val ship = body.uniqueId.toString()
+        val dimension = computer.level.dimension().location().toString()
+        // Copy only immutable values. No body, level, context or host enters the worker.
+        val profile = celestial.frames.profile
+        val epoch = celestial.frames.tick
+        if (root.position.length() > profile.flightRange || root.velocity.length() > 9990.0) return unavailable()
+        return forecast {
+            val result = EarthEntryForecast.calculate(profile, epoch, root)
+            val p = result.state.position
+            val v = result.state.velocity
+            EntrySummary(tick, ship, dimension, result.willEnter, result.seconds,
+                Vector3d(p.x, p.y, p.z), Vector3d(v.x, v.y, v.z))
+        }
+    }
+
+    private fun <T> forecast(calculate: () -> T): AddonCallResult<T> {
         if (pending != null) return addonFailed(HostFailureKind.UNAVAILABLE, "A forecast is already pending")
-        val future = try {
-            forecastWorker.submit<CoastSummary> {
-                val trajectory = capture.calculate()
-                val prediction = trajectory.prediction
-                CoastSummary(trajectory.sampledTick, trajectory.ship.toString(), trajectory.dimension.toString(),
-                    prediction.end.name, prediction.terminal.seconds,
-                    prediction.points.minOf { it.state.position.length() },
-                    prediction.points.maxOf { it.state.position.length() })
-            }
-        } catch (failure: java.util.concurrent.RejectedExecutionException) {
+        val future = try { forecastWorker.submit<T> { calculate() } }
+        catch (failure: java.util.concurrent.RejectedExecutionException) {
             return addonFailed(HostFailureKind.UNAVAILABLE, "Forecast worker is busy")
         }
         pending = future
