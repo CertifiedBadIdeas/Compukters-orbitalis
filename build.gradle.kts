@@ -22,7 +22,7 @@ plugins {
     id("ru.lazyhat.compukters.addon")
 }
 group = "org.cbi.development"
-version = "1.0"
+version = "1.1"
 java { toolchain.languageVersion.set(JavaLanguageVersion.of(21)) }
 kotlin { jvmToolchain(21) }
 val compukters = file(providers.gradleProperty("compuktersWorkspace").get())
@@ -36,7 +36,7 @@ repositories {
     maven("https://api.modrinth.com/maven")
 }
 apply(from = "../../gradle/sable-libraries.gradle.kts")
-compuktersAddon { register("orbitalis", "1.0") }
+compuktersAddon { register("orbitalis", "1.1") }
 configurations.named("compuktersAddonTooling") {
     withDependencies {
         clear()

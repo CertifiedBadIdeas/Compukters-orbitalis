@@ -3,10 +3,10 @@ loaderVersion="[4,)"
 license="Apache-2.0"
 [[mods]]
 modId="compukters_orbitalis"
-version="1.0"
+version="1.1"
 displayName="Compukters: Orbitalis"
 authors="lazyhat"
-description="Read-only celestial gravity observations for Guest programs."
+description="Read-only celestial observations and engines-off coast forecasts for Guest programs."
 
 [[dependencies.compukters_orbitalis]]
 modId="compukters"
