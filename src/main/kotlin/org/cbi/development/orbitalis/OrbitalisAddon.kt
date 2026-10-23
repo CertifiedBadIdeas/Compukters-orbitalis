@@ -20,6 +20,7 @@ import dev.ryanhcode.sable.Sable
 import dev.ryanhcode.sable.sublevel.ServerSubLevel
 import net.neoforged.fml.common.Mod
 import org.cbi.orbitalis.minecraft.integration.sable.SableFlightGravity
+import org.cbi.orbitalis.minecraft.integration.sable.ShipTransferParticipants
 import orbitalis.GravitySample
 import orbitalis.OrbitalisAddonContract
 import orbitalis.OrbitalisCapabilityHandler
@@ -35,6 +36,7 @@ import ru.lazyhat.compukters.lang.runtime.vm.HostFailureKind
 @Mod("compukters_orbitalis")
 class OrbitalisAddon {
     init {
+        ShipTransferParticipants.register("compukters", CompuktersShipTransferParticipant)
         CompuktersAddonRegistry.register(
             OrbitalisAddonContract.guestApi(OrbitalisAddon::class.java),
             CompuktersAddonHostFactory { computer -> OrbitalisAddonContract.host(GravityHost(computer)) },
