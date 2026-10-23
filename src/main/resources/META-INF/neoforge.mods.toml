@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="Apache-2.0"
+[[mods]]
+modId="compukters_orbitalis"
+version="1.0"
+displayName="Compukters: Orbitalis"
+authors="lazyhat"
+description="Read-only celestial gravity observations for Guest programs."
+
+[[dependencies.compukters_orbitalis]]
+modId="compukters"
+type="required"
+versionRange="[0.7.0-SNAPSHOT,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.compukters_orbitalis]]
+modId="orbitalis"
+type="required"
+versionRange="[0.2.0-SNAPSHOT,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.compukters_orbitalis]]
+modId="sable"
+type="required"
+versionRange="[2.0.6]"
+ordering="AFTER"
+side="BOTH"

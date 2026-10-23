@@ -1,0 +1,4 @@
+lock 2
+record kotlin.math.Vector3d kotlin.math.Vector3d{x:F64,y:F64,z:F64}
+record orbitalis.gravity.GravitySample orbitalis.gravity.GravitySample{gameTick:I64,constructionId:STRING,dimension:STRING,computerPlotPosition:kotlin.math.Vector3d{x:F64,y:F64,z:F64},position:kotlin.math.Vector3d{x:F64,y:F64,z:F64},velocity:kotlin.math.Vector3d{x:F64,y:F64,z:F64},acceleration:kotlin.math.Vector3d{x:F64,y:F64,z:F64},mass:F64}
+operation orbitalis orbitalis 1 0 active orbitalis.gravity.Gravity.sample fun():GravitySample
