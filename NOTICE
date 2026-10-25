@@ -1,10 +1,8 @@
-Orbitalis–Compukters development stand
+Compukters: Orbitalis
 Copyright 2026 Vsevolod Petrov (lazyhat)
 
+Addon sources originated in the Orbitalis–Compukters development stand.
 Gradle wrapper scripts and wrapper JAR are from Gradle (Apache-2.0).
-Sable/Aeronautics extraction scripts are adapted from Orbitalis and Compukters;
-their original copyright and adaptation notices are preserved.
-Worktree lifecycle scripts, managed Gradle wrappers and cache tooling are adapted from
-Orbitalis (originally Compukters), with their Apache-2.0 notices preserved.
-Upstream mods, libraries and fixture sources remain owned by their respective projects.
-This stand downloads development dependencies and produces no distributable mod.
+The Sable extraction script is adapted from Orbitalis and Compukters;
+its original copyright and adaptation notices are preserved.
+External mods and libraries remain owned by their respective projects.
