@@ -1,0 +1,8 @@
+.gradle/
+.gradle-sandbox/
+.toolchain/
+build/
+run/
+.idea/
+*.iml
+.agents/tmp/

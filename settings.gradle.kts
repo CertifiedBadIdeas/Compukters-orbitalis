@@ -16,16 +16,18 @@
 
 import java.util.Properties
 
-gradle.extra["flightDevRoot"] = settingsDir.parentFile.parentFile.absolutePath
-apply(from = "../../gradle/workspace.settings.gradle.kts")
-val compukters = providers.gradleProperty("compuktersWorkspace").orNull
-    ?.let { file(it).canonicalFile }
-    ?: file(gradle.extra["compuktersCheckout"].toString())
-val orbitalis = file(gradle.extra["orbitalisCheckout"].toString())
+check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_25)) {
+    "Run Gradle with JDK 25; Minecraft uses a Java 21 toolchain."
+}
+val compukters = file(providers.gradleProperty("compuktersWorkspace").get()).canonicalFile
+val orbitalis = file(providers.gradleProperty("orbitalisCheckout").get()).canonicalFile
+check(compukters.resolve("settings.gradle.kts").isFile) { "compuktersWorkspace is not a source checkout: $compukters" }
+check(orbitalis.resolve("settings.gradle.kts").isFile) { "orbitalisCheckout is not a source checkout: $orbitalis" }
 gradle.extra["compuktersCheckout"] = compukters.absolutePath
+gradle.extra["orbitalisCheckout"] = orbitalis.absolutePath
 val sdk = compukters.resolve("build/addon-sdk")
 check(sdk.resolve("sdk.properties").isFile) {
-    "Prepare the SDK first: run this stand's ./gradlew prepareWorkspace."
+    "Prepare the SDK first: run stageAddonDevelopmentDependencies in the selected Compukters checkout."
 }
 val metadata = Properties().apply { sdk.resolve("sdk.properties").inputStream().use(::load) }
 gradle.extra["compuktersSdkDirectory"] = sdk.absolutePath

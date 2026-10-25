@@ -35,7 +35,7 @@ repositories {
     maven("https://maven.neoforged.net/releases/")
     maven("https://api.modrinth.com/maven")
 }
-apply(from = "../../gradle/sable-libraries.gradle.kts")
+apply(from = "gradle/sable-libraries.gradle.kts")
 compuktersAddon { register("orbitalis", "1.2") }
 configurations.named("compuktersAddonTooling") {
     withDependencies {
