@@ -16,9 +16,17 @@
 
 import java.util.Properties
 
-val compukters = file(providers.gradleProperty("compuktersWorkspace").get())
-val orbitalis = file(providers.gradleProperty("orbitalisCheckout").get())
+gradle.extra["flightDevRoot"] = settingsDir.parentFile.parentFile.absolutePath
+apply(from = "../../gradle/workspace.settings.gradle.kts")
+val compukters = providers.gradleProperty("compuktersWorkspace").orNull
+    ?.let { file(it).canonicalFile }
+    ?: file(gradle.extra["compuktersCheckout"].toString())
+val orbitalis = file(gradle.extra["orbitalisCheckout"].toString())
+gradle.extra["compuktersCheckout"] = compukters.absolutePath
 val sdk = compukters.resolve("build/addon-sdk")
+check(sdk.resolve("sdk.properties").isFile) {
+    "Prepare the SDK first: run this stand's ./gradlew prepareWorkspace."
+}
 val metadata = Properties().apply { sdk.resolve("sdk.properties").inputStream().use(::load) }
 gradle.extra["compuktersSdkDirectory"] = sdk.absolutePath
 settings.pluginManagement.apply {

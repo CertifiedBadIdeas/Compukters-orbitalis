@@ -25,8 +25,8 @@ group = "org.cbi.development"
 version = "1.2"
 java { toolchain.languageVersion.set(JavaLanguageVersion.of(21)) }
 kotlin { jvmToolchain(21) }
-val compukters = file(providers.gradleProperty("compuktersWorkspace").get())
-val orbitalis = file(providers.gradleProperty("orbitalisCheckout").get())
+val compukters = file(gradle.extra["compuktersCheckout"].toString())
+val orbitalis = file(gradle.extra["orbitalisCheckout"].toString())
 val sdk = File(gradle.extra["compuktersSdkDirectory"].toString())
 val sdkVersion = Properties().apply { sdk.resolve("sdk.properties").inputStream().use(::load) }.getProperty("sdkVersion")
 repositories {
