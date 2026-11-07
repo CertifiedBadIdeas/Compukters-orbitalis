@@ -22,7 +22,7 @@ plugins {
     id("ru.lazyhat.compukters.addon")
 }
 group = "org.cbi.development"
-version = "1.2"
+version = "1.3"
 java { toolchain.languageVersion.set(JavaLanguageVersion.of(21)) }
 kotlin { jvmToolchain(21) }
 val compukters = file(gradle.extra["compuktersCheckout"].toString())

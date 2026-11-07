@@ -39,3 +39,13 @@ Minecraft as part of `check`. The stable development archive is
 `build/devlibs/compukters-orbitalis-development-mod.jar`; independent client compositions may consume it.
 
 This repository preserves the original addon's extracted history from Orbitalis-Compukters-Dev.
+
+## Declarative Guest contracts
+
+Guest API declarations live in `src/compuktersAddon/contracts`. The SDK generates the actual Guest Kotlin under
+`build/generated/sources/compuktersGuest/kotlin` and packages those sources with the executable `.cagb` image.
+Run `generateCompuktersGuestSources` to inspect the result. Check in `src/compuktersAddon/addon.lock` as ABI history;
+only `updateCompuktersAddonAbiLock` changes selectors/tombstones after an intentional contract edit.
+Unit-returning `@GuestCommand` methods get ordinary calls and batch command factories from the same declaration.
+The generated host validates declared parameter constraints and derives command eligibility.
+See the [SDK authoring guide](https://github.com/CertifiedBadIdeas/Compukters/blob/dev/docs/developers/addon-development.md).
