@@ -16,15 +16,13 @@
 
 package orbitalis.gravity
 
-import ru.lazyhat.compukters.api.contracts.GuestRead
-import ru.lazyhat.compukters.api.contracts.GuestRecord
+import ru.lazyhat.compukters.api.contracts.GuestCall
 import ru.lazyhat.compukters.api.contracts.GuestService
 import kotlin.math.Vector3d
 
 /** Atomic server observation at native centre of mass, in the current dimension's chart.
  * Acceleration includes Orbitalis frame terms. Units are blocks, seconds, kpg and m/s².
  */
-@GuestRecord
 value class GravitySample(
     val gameTick: Long,
     val constructionId: String,
@@ -39,6 +37,6 @@ value class GravitySample(
 /** Read-only field sampling; no guidance, forces, engine input or tick handlers. */
 @GuestService(bindings = "Gravity")
 interface Gravity {
-    @GuestRead(binding = "sample")
+    @GuestCall(binding = "sample")
     fun sample(): GravitySample
 }

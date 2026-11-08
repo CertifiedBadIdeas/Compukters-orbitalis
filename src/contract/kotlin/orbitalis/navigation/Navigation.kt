@@ -16,8 +16,7 @@
 
 package orbitalis.navigation
 
-import ru.lazyhat.compukters.api.contracts.GuestRead
-import ru.lazyhat.compukters.api.contracts.GuestRecord
+import ru.lazyhat.compukters.api.contracts.GuestCall
 import ru.lazyhat.compukters.api.contracts.GuestService
 import ru.lazyhat.compukters.api.contracts.GuestWait
 import kotlin.math.Vector3d
@@ -26,7 +25,6 @@ import kotlin.math.Vector3d
  * exclusionRadius encloses the rotating Earth and its return-to-surface band, including 64 m clearance.
  * mu is a far-field approximation only; the coast forecast uses the real noncentral, moving field.
  */
-@GuestRecord
 value class NavigationSample(
     val gameTick: Long,
     val constructionId: String,
@@ -45,7 +43,6 @@ value class NavigationSample(
  * ORBIT is a nearly closed turn; REVOLUTION is a complete nonclosed turn.
  * Other endings do not demonstrate an orbit. Times are seconds; distances are blocks.
  */
-@GuestRecord
 value class CoastSummary(
     val sampledTick: Long,
     val constructionId: String,
@@ -60,7 +57,6 @@ value class CoastSummary(
  * acceleration is the engines-off derivative of velocity, including transport terms.
  * earthX/Y/Z rotate Earth force vectors into the current native Sable chart.
  */
-@GuestRecord
 value class EarthSample(
     val gameTick: Long,
     val constructionId: String,
@@ -81,7 +77,6 @@ value class EarthSample(
  * If willEnter is false, position/velocity describe the terminal forecast state instead.
  * Ignores engines, collisions and atmospheric drag; not a landing recommendation.
  */
-@GuestRecord
 value class EntrySummary(
     val sampledTick: Long,
     val constructionId: String,
@@ -94,10 +89,10 @@ value class EntrySummary(
 
 @GuestService(bindings = "Navigation")
 interface Navigation {
-    @GuestRead(binding = "observe")
+    @GuestCall(binding = "observe")
     fun observe(): NavigationSample
 
-    @GuestRead(binding = "earth")
+    @GuestCall(binding = "earth")
     fun earth(): EarthSample
 
     @GuestWait(binding = "entry")
