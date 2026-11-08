@@ -20,14 +20,14 @@ import ru.lazyhat.compukters.api.contracts.GuestRead
 import ru.lazyhat.compukters.api.contracts.GuestRecord
 import ru.lazyhat.compukters.api.contracts.GuestService
 import ru.lazyhat.compukters.api.contracts.GuestWait
-import ru.lazyhat.compukters.api.contracts.types.Vector3d
+import kotlin.math.Vector3d
 
 /** Earth-centred, nonrotating physical state. Axes map root directions into the native chart.
  * exclusionRadius encloses the rotating Earth and its return-to-surface band, including 64 m clearance.
  * mu is a far-field approximation only; the coast forecast uses the real noncentral, moving field.
  */
 @GuestRecord
-data class NavigationSample(
+value class NavigationSample(
     val gameTick: Long,
     val constructionId: String,
     val dimension: String,
@@ -46,7 +46,7 @@ data class NavigationSample(
  * Other endings do not demonstrate an orbit. Times are seconds; distances are blocks.
  */
 @GuestRecord
-data class CoastSummary(
+value class CoastSummary(
     val sampledTick: Long,
     val constructionId: String,
     val dimension: String,
@@ -61,7 +61,7 @@ data class CoastSummary(
  * earthX/Y/Z rotate Earth force vectors into the current native Sable chart.
  */
 @GuestRecord
-data class EarthSample(
+value class EarthSample(
     val gameTick: Long,
     val constructionId: String,
     val dimension: String,
@@ -82,7 +82,7 @@ data class EarthSample(
  * Ignores engines, collisions and atmospheric drag; not a landing recommendation.
  */
 @GuestRecord
-data class EntrySummary(
+value class EntrySummary(
     val sampledTick: Long,
     val constructionId: String,
     val dimension: String,
